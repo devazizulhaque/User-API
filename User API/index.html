@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User API</title>
+</head>
+<body>
+    <input style="width:50px;" type="text" name="" id="user-count">
+    <button id="load-user">Load User</button>
+    <div id="users"></div>
+    <div id="user-detail"></div>
+    <script>
+        document.getElementById('load-user').addEventListener('click', function(){
+            const countText = document.getElementById('user-count').value;
+            const count = parseInt(countText);
+            fetch('https://jsonplaceholder.typicode.com/users')
+                .then(res => res.json())
+                .then(data => {
+                data = data.slice(0, count);
+                const userContainer = document.getElementById('users');
+                userContainer.innerHTML = '';
+                for (let i = 0; i < data.length; i++) {
+                    const user = data[i];
+                    const p = document.createElement('p');
+                    p.innerHTML = `<p class="user">Name: <strong>${user.name}</strong> <br>
+                    Email: <strong>${user.email}</strong> <br>
+                    <button onclick="getUserDetails(${user.id})">Details - ${user.id}</button></p>`;
+                    userContainer.appendChild(p);
+                }
+            })
+        })
+        
+        function getUserDetails(userId) {
+            fetch(`https://jsonplaceholder.typicode.com/users/${userId}`)
+            .then(res => res.json())
+            .then(data => {
+                const detail = document.getElementById('user-detail');
+                detail.innerHTML = `
+                    <h3>${data.name}</h3>
+                    <p>Phone: ${data.phone}</p>
+                    <p>Website: ${data.website}</p>
+                    <p>Company: ${data.company.name}</p>
+
+                `;
+            })
+        }
+    </script>
+</body>
+</html> 
